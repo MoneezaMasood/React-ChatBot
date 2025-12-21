@@ -29,6 +29,30 @@
       );
     }
 
+    function Counter(){
+      const [count,setCount]=React.useState(0);
+      return(
+        <>
+        <h1>
+          This is a counter function
+          </h1>
+          <button onClick={increment}>
+            Increase count
+            </button>
+            Count is: {count}
+        </>
+      )
+    function increment(){
+      setCount(count+1);
+      return count;
+    }
+    }
+
+
+
+
+
+
     function ChatMessage({ message, sender }) {
       return (
         <div>
