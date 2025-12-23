@@ -1,6 +1,104 @@
 <!DOCTYPE html>
 <html>
 
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+  }
+
+  .chat-app {
+    width: 360px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .chat-title {
+    background: #4caf50;
+    color: white;
+    padding: 12px;
+    margin: 0;
+    text-align: center;
+  }
+
+  .chat-window {
+    padding: 12px;
+    height: 320px;
+    overflow-y: auto;
+    background: #f9f9f9;
+  }
+
+  .chat-message {
+    display: flex;
+    align-items: flex-end;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+
+  .chat-message.user {
+    justify-content: flex-end;
+  }
+
+  .chat-message.robot {
+    justify-content: flex-start;
+  }
+
+  .bubble {
+    max-width: 65%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+  }
+
+  .user .bubble {
+    background: #4caf50;
+    color: white;
+    border-bottom-right-radius: 4px;
+  }
+
+  .robot .bubble {
+    background: #e0e0e0;
+    color: #333;
+    border-bottom-left-radius: 4px;
+  }
+
+  .chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    gap: 8px;
+  }
+
+  input {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+
+  button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #43a047;
+  }
+</style>
+
+
 <head>
   <title>Chatbot</title>
 </head>
@@ -10,7 +108,7 @@
 
   <script src="https://unpkg.com/supersimpledev@8.6.4/external-library.js"></script>
   <script src="https://unpkg.com/supersimpledev/react.js"></script>
-    <script src="https://unpkg.com/supersimpledev/chatbot.js"></script>
+  <script src="https://unpkg.com/supersimpledev/chatbot.js"></script>
   <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
   <script src="https://unpkg.com/supersimpledev/babel.js"></script>
 
@@ -29,36 +127,32 @@
       );
     }
 
-    function Counter(){
-      const [count,setCount]=React.useState(0);
-      return(
+    function Counter() {
+      const [count, setCount] = React.useState(0);
+      return (
         <>
-        <h1>
-          This is a counter function
+          <h1>
+            This is a counter function
           </h1>
           <button onClick={increment}>
             Increase count
-            </button>
-            Count is: {count}
+          </button>
+          Count is: {count}
         </>
       )
-    function increment(){
-      setCount(count+1);
-      return count;
+      function increment() {
+        setCount(count + 1);
+        return count;
+      }
     }
-    }
-
-
-
-
-
-
     function ChatMessage({ message, sender }) {
       return (
-        <div>
-          {sender === 'robot' && <img src="robot.png" width="50" />}
-          {message}
-          {sender === 'user' && <img src="user.png" width="50" />}
+        <div className={`chat-message ${sender}`}>
+          <img
+            src={sender === 'robot' ? 'robot.png' : 'user.png'}
+            width="40"
+          />
+          <span className="bubble">{message}</span>
         </div>
       );
     }
@@ -83,6 +177,7 @@
     }
 
     function App() {
+      // const [error, setError] = React.useState('');
       const [input, setInput] = React.useState('');
 
       const [chatMessages, setChatMessages] = React.useState([
@@ -91,34 +186,51 @@
       ]);
 
       function sendMessage() {
-        const userMessage= {
-            message: input || 'test',
-            sender: 'user',
-            id: crypto.randomUUID() // for unique ID
-          };
-                  const response= Chatbot.getResponse(input)
-        console.log(response)
+        if (input.trim() === '') {
+          // setError('Please enter a message');
+          alert('Please enter a message');
+          return;
+        }
 
-        const robotMessage= {
-            message: response,
-            sender: 'robot',
-            id: crypto.randomUUID() // for unique ID
-          };
+        // setError(''); // clear error if valid //this is another method to do the 
+
+        const userMessage = {
+          message: input,
+          sender: 'user',
+          id: crypto.randomUUID()
+        };
+
+        const response = Chatbot.getResponse(input);
+
+        const robotMessage = {
+          message: response,
+          sender: 'robot',
+          id: crypto.randomUUID()
+        };
 
         setChatMessages([
-          ...chatMessages, // using ... to create a copy of existing array
+          ...chatMessages,
           userMessage,
           robotMessage
         ]);
-        setInput(''); // removing & controlling input field after sending message
+
+        setInput('');
       }
 
+
       return (
-        <>
-          <ChatInput input={input} setInput={setInput} />
-          <button onClick={sendMessage}>Send</button>
-          <ChatMessages ChatMessages={chatMessages} />
-        </>
+        <div className="chat-app">
+          <h2 className="chat-title">💬 Chatbot</h2>
+
+          <div className="chat-window">
+            <ChatMessages ChatMessages={chatMessages} />
+          </div>
+
+          <div className="chat-input">
+            <ChatInput input={input} setInput={setInput} />
+            <button onClick={sendMessage}>Send</button>
+          </div>
+        </div>
       );
     }
 
@@ -127,4 +239,5 @@
   </script>
 
 </body>
+
 </html>
