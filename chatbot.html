@@ -8,16 +8,16 @@
     display: flex;
     justify-content: center;
     margin-top: 40px;
+    
   }
 
   .chat-app {
-    width: 360px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+   width: 360px;
+  height: 500px;        /* IMPORTANT */
+  background: #fff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column; 
   }
 
   .chat-title {
@@ -104,6 +104,7 @@
 </head>
 
 <body>
+  
   <div class="js-container"></div>
 
   <script src="https://unpkg.com/supersimpledev@8.6.4/external-library.js"></script>
@@ -188,7 +189,7 @@
       function sendMessage() {
         if (input.trim() === '') {
           // setError('Please enter a message');
-          alert('Please enter a message');
+          alert('Please enter a prompt');
           return;
         }
 
